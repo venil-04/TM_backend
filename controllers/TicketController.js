@@ -31,7 +31,7 @@ exports.createTicket = async (req, res) => {
 
 exports.getAvailableTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ status: "available" }).populate("userId", "email name");
+    const tickets = await Ticket.find({ status: "available" }).populate("userId", "email name phone");
     res.status(200).json(tickets);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -42,7 +42,7 @@ exports.getTicketById = async (req, res) => {
     try {
       const { id } = req.params;
   
-      const ticket = await Ticket.findById(id).populate("userId", "name email");
+      const ticket = await Ticket.findById(id).populate("userId", "name email phone");
       if (!ticket) {
         return res.status(404).json({ error: "Ticket not found" });
       }
@@ -59,7 +59,7 @@ exports.getTicketById = async (req, res) => {
       const userId = req.user._id; // Assuming user ID is extracted from the token middleware
   
       // Fetch tickets by userId
-      const tickets = await Ticket.find({ userId });
+      const tickets = await Ticket.find({ userId }).populate("userId", "name email phone");
   
       if (!tickets || tickets.length === 0) {
         return res.status(404).json({ message: 'No tickets found for this user.' });
