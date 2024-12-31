@@ -52,3 +52,22 @@ exports.getTicketById = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+  exports.getTicketByUserId = async (req, res) => {
+    try {
+        console.log(req.user)
+      const userId = req.user._id; // Assuming user ID is extracted from the token middleware
+  
+      // Fetch tickets by userId
+      const tickets = await Ticket.find({ userId });
+  
+      if (!tickets || tickets.length === 0) {
+        return res.status(404).json({ message: 'No tickets found for this user.' });
+      }
+  
+      res.status(200).json({ tickets });
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+      res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+  };
